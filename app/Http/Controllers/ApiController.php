@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ChaveCadastro;
+use App\Models\Token;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -23,24 +26,44 @@ class ApiController extends Controller
 
                 $token_email = DB::table('tokens')->where('token', $key)->value('email');
 
-                if ($token_email !== $email) {
+                if (!empty($key) && $token_email !== $email) {
                     $response['register'] = false;
                     $response['error'] = 'Token informado não é associado ao email';
+
                 } else {
                     if (empty($key)) {
-
-                        $key = bind2hex(random_bytes(16));
+                        $key = bin2hex(random_bytes(16));
                         $created_at = now();
 
-                        DB::table('tokens')->insert([
+                        Token::create([
                             'token' => $key,
                             'email' => $email,
                             'created_at' => $created_at,
                         ]);
 
-                        Mail::to($email)->send(new )
+                        Mail::to($email)->send(new ChaveCadastro($key));
+                    }
+
+                    if(!empty($key) && $token_email == $email) {
+                        User::create([
+                            'name' => $name,
+                            'email' => $email,
+                            'password' => Hash::make($password),
+                            'register_token' => $key,
+                        ]);
+
+                        $check++;
+
+                        if(!$check) {
+                            $response['register'] = false;
+                        } else {
+                            $response['register'] = true;
+                        }
                     }
                 }
+            } catch (\Exception $e) {
+                $response['error'] = true;
+                $response['message'] = $e->getMessage();
             }
         }
 
