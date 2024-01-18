@@ -17,7 +17,6 @@ class LoginController extends Controller
             try {
                 $email = $data['user_email'];
                 $password = $data['user_password'];
-                $check = 0;
 
                 // Busca o usuário no banco de dados
                 $check_user_email = DB::table('users')->where('email', $email)->first();

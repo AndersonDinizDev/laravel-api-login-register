@@ -42,6 +42,9 @@ class ApiController extends Controller
                         ]);
 
                         Mail::to($email)->send(new ChaveCadastro($key));
+
+                        $response['token_enviado'] = true;
+                        $response['message'] = 'Token criado e enviado com sucesso';
                     }
 
                     if(!empty($key) && $token_email == $email) {
