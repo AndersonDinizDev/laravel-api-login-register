@@ -16,3 +16,85 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::any('/any', function() {
+    return "Permite todo o tipo de acesso http (put, delete, get e post)";
+});
+
+Route::match(['put', 'delete'], '/match', function() {
+    return "Permite apenas acessos definidos";
+});
+
+Route::get('/produto/{id}', function($id) {
+    return "O id do produto é: $id";
+});
+
+Route::get('/sobre', function() {
+    return redirect('/empresa'); // Redireciona para outro lugar.
+});
+
+Route::redirect('/sobre', '/'); // Redireciona para outro lugar.
+
+Route::view('empresa', 'site/empresa'); // Outra forma de acessar uma view.
+
+Route::get('/news', function() {
+    return view('news');
+})->name('noticias'); // Nomeando uma view
+
+Route::get('/novidades', function() {
+    return redirect()->route('noticias'); // Redireciona para o nome da rota.
+});
+
+// Agrupando usando um prefixo.
+// Route::prefix('admin')->group(function() {
+
+//     Route::get('/dashboard', function() {
+//         return "dashboard";
+//     });
+    
+//     Route::get('/users', function() {
+//         return "Users";
+//     });
+    
+//     Route::get('/clientes', function() {
+//         return "Clientes";
+//     });
+
+// });
+
+
+// Agrupando usando um nome;
+// Route::name('admin.')->group(function() {
+
+//     Route::get('/dashboard', function() {
+//         return "dashboard";
+//     })->name('dashboard');
+    
+//     Route::get('/users', function() {
+//         return "Users";
+//     })->name('users');
+    
+//     Route::get('/clientes', function() {
+//         return "Clientes";
+//     })->name('clientes');
+
+// });
+
+// Agrupando por prefixo e nome.
+Route::group(['prefix' => 'admin', 'as' => 'admin'], function() {
+
+
+    Route::get('/dashboard', function() {
+        return "dashboard";
+    })->name('dashboard');
+    
+    Route::get('/users', function() {
+        return "Users";
+    })->name('users');
+    
+    Route::get('/clientes', function() {
+        return "Clientes";
+    })->name('clientes');
+
+});
