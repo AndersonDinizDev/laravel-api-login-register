@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Produto2Controller;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProdutoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +28,7 @@ Route::match(['put', 'delete'], '/match', function() {
     return "Permite apenas acessos definidos";
 });
 
-Route::get('/produto/{id}', function($id) {
+Route::get('/produto2/{id}', function($id) {
     return "O id do produto é: $id";
 });
 
@@ -98,3 +100,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin'], function() {
     })->name('clientes');
 
 });
+
+Route::get('/produto', [ProdutoController::class, 'index']);
+
+Route::get('/produto/{id}', [ProdutoController::class, 'show']);
+
+Route::resource('produtos', Produto2Controller::class); // Utiliza todos os métodos.
